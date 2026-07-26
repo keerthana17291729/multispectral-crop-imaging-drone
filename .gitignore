@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+crop_env/
+venv/
+.env
+
+# Python cache
+.pytest_cache/
+
+# VS Code
+.vscode/
+
+# Node
+frontend/node_modules/
+
+# Build files
+frontend/dist/
+
+# Uploaded images
+backend/outputs/uploads/
+
+# Generated maps
+backend/outputs/maps/
+
+# Reports
+backend/outputs/reports/
+
+# OS files
+.DS_Store
+Thumbs.db
