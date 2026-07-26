@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+python-multipart
+numpy
+matplotlib
+rasterio
+scikit-learn
+joblib
+scipy
+Pillow
+opencv-python
+torch
+torchvision
+torchaudio
