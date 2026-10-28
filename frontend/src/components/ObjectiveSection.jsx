@@ -1,89 +1,82 @@
-import { useState } from "react"
-import { analyzeObjectives } from "../services/api"
+
+import { useState } from "react";
+import { analyzeObjectives } from "../services/api";
 
 const objectives = [
-    "All",
+  "All",
+  "Health",
+  "Water Stress",
+  "Chlorophyll",
+  "Disease Detection",
+  "Disease Localization",
+  "Growth Monitoring",
+  "Yield Estimation",
+  "Zone Mapping",
+  "Disease Prediction"
+];
+
+function ObjectiveSection({ file, setResult, setMessage }) {
+  const [selected, setSelected] = useState("All");
+  const [loading, setLoading] = useState(false);
+
+  const notImplemented = [
     "Health",
-    "Water Stress",
-    "Chlorophyll",
     "Disease Detection",
     "Disease Localization",
     "Growth Monitoring",
     "Yield Estimation",
-    "Zone Mapping",
     "Disease Prediction"
-]
+  ];
 
-function ObjectiveSection({ file, setResult, setMessage }) {
-
-    const [selected, setSelected] = useState("All")
-    const [loading, setLoading] = useState(false)
-
-    const notImplemented = [
-        "Health",
-        "Disease Detection",
-        "Disease Localization",
-        "Growth Monitoring",
-        "Yield Estimation",
-        "Disease Prediction"
-    ]
-
-    const handleAnalyze = async () => {
-
-        if (!file) return
-
-        setLoading(true)
-
-        if (notImplemented.includes(selected)) {
-
-            const res = await analyzeObjectives(file, "classification")
-
-            setResult(res)
-
-            setMessage("This will be implemented in the future.")
-
-            setLoading(false)
-
-            return
-
-        }
-
-        setMessage("")
-
-        const res = await analyzeObjectives(file, selected)
-
-        setResult(res)
-
-        setLoading(false)
-
+  const handleAnalyze = async () => {
+    if (!file || loading) {
+      if (!file) setMessage("Please upload an image first.");
+      return;
     }
 
-    return (
+    setLoading(true);
+    setMessage("");
 
-        <div className="objective-box">
+    try {
+      const objective = notImplemented.includes(selected)
+        ? "classification"
+        : selected;
 
-            <select
-                className="objective-select"
-                value={selected}
-                onChange={(e) => setSelected(e.target.value)}
-            >
+      const response = await analyzeObjectives(file, objective);
+      setResult(response);
 
-                {objectives.map(o => (
-                    <option key={o} value={o}>{o}</option>
-                ))}
+      if (notImplemented.includes(selected)) {
+        setMessage(
+          `${selected} is not implemented yet. The image was classified again instead.`
+        );
+      }
+    } catch (error) {
+      setMessage(error.message || "Analysis failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            </select>
+  return (
+    <div className="objective-box">
+      <select
+        className="objective-select"
+        value={selected}
+        onChange={(event) => setSelected(event.target.value)}
+        disabled={loading}
+      >
+        {objectives.map((objective) => (
+          <option key={objective} value={objective}>
+            {objective}
+          </option>
+        ))}
+      </select>
 
-            <button onClick={handleAnalyze} disabled={loading}>
-
-                {loading ? "Processing..." : "Analyze"}
-
-            </button>
-
-        </div>
-
-    )
-
+      <button onClick={handleAnalyze} disabled={loading || !file}>
+        {loading ? "Processing..." : "Analyze"}
+      </button>
+    </div>
+  );
 }
 
-export default ObjectiveSection
+export default ObjectiveSection;

@@ -1,14 +1,11 @@
+
 fastapi
 uvicorn
 python-multipart
 numpy
 matplotlib
 rasterio
-scikit-learn
+scikit-learn==1.8.0
 joblib
 scipy
 Pillow
-opencv-python
-torch
-torchvision
-torchaudio
