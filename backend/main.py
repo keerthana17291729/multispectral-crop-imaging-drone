@@ -19,7 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent
 MAPS_DIR = BASE_DIR / "outputs" / "maps"
 UPLOADS_DIR = BASE_DIR / "outputs" / "uploads"
 
-# Create these directories before StaticFiles mounts them.
 MAPS_DIR.mkdir(parents=True, exist_ok=True)
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -33,16 +32,18 @@ app = FastAPI(
 )
 
 # --------------------------------------------------
-# CORS CONFIGURATION
-# Add your actual Vercel URL after frontend deployment.
+# CORS
 # --------------------------------------------------
 allowed_origins = [
     "http://localhost:5173",
+    "https://multispectral-crop-imaging-drone.vercel.app",
 ]
 
 vercel_url = os.getenv("FRONTEND_URL")
 if vercel_url:
-    allowed_origins.append(vercel_url.rstrip("/"))
+    normalized_url = vercel_url.rstrip("/")
+    if normalized_url not in allowed_origins:
+        allowed_origins.append(normalized_url)
 
 app.add_middleware(
     CORSMiddleware,
@@ -68,7 +69,7 @@ app.mount(
 )
 
 # --------------------------------------------------
-# ROOT ENDPOINT
+# ROOT
 # --------------------------------------------------
 @app.get("/")
 def root():
@@ -78,7 +79,7 @@ def root():
     }
 
 # --------------------------------------------------
-# CROP ANALYSIS ENDPOINT
+# ANALYZE CROP
 # --------------------------------------------------
 @app.post("/analyze")
 async def analyze_crop(
@@ -99,29 +100,29 @@ async def analyze_crop(
             detail="Please upload a TIFF or TIF multispectral image.",
         )
 
-    # Ensure upload directory exists, including if UPLOAD_DIR
-    # is configured as a relative or absolute path.
     upload_dir = Path(UPLOAD_DIR)
     upload_dir.mkdir(parents=True, exist_ok=True)
-
     filepath = upload_dir / safe_filename
 
     try:
         with filepath.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # Generate preview for frontend display.
         preview_file = generate_preview(str(filepath))
 
-        # Run classification-only workflow when requested.
         if objectives == "classification":
             result = run_pipeline(str(filepath), "classification")
         else:
             result = run_pipeline(str(filepath), objectives)
 
+        if not isinstance(result, dict):
+            raise HTTPException(
+                status_code=500,
+                detail="The analysis pipeline returned an invalid result.",
+            )
+
         result["uploaded_image"] = f"/maps/{Path(preview_file).name}"
 
-        # Preserve the existing non-Paddy handling.
         if result.get("crop") != "Paddy":
             return JSONResponse(
                 content={
@@ -136,9 +137,10 @@ async def analyze_crop(
     except HTTPException:
         raise
     except Exception as exc:
+        print(f"Crop analysis failed: {type(exc).__name__}: {exc}")
         raise HTTPException(
             status_code=500,
-            detail=f"Crop analysis failed: {str(exc)}",
+            detail=f"Crop analysis failed: {type(exc).__name__}: {exc}",
         ) from exc
     finally:
         await file.close()
