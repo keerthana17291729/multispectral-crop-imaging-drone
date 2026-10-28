@@ -1,11 +1,11 @@
-# 🌾 Multispectral Crop Imaging Drone
+# 🌾 Multispectral Paddy Crop Analysis System
 ### AI-Powered Paddy Crop Analysis Using Multispectral UAV Imagery
 
 ---
 
 ## 📖 Overview
 
-**Multispectral Crop Imaging Drone** is an AI-powered web application that analyzes multispectral drone images of paddy fields to assess crop health, detect water stress, estimate chlorophyll levels, and classify vegetation zones.
+**Multispectral Paddy Crop Analysis System** is an AI-powered web application that analyzes multispectral drone images of paddy fields to assess crop health, detect water stress, estimate chlorophyll levels, and classify vegetation zones.
 
 The system processes multispectral UAV imagery using vegetation indices such as **NDVI**, **NDRE**, and **NDWI**, combined with machine learning techniques to provide accurate and easy-to-understand crop insights.
 
