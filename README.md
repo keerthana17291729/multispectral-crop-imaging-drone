@@ -1,163 +1,211 @@
 # 🌾 Multispectral Paddy Crop Analysis System
 ### AI-Powered Paddy Crop Analysis Using Multispectral UAV Imagery
 
+An AI-powered web application for analyzing multispectral drone imagery of paddy fields to support crop classification, vegetation health assessment, water stress analysis, chlorophyll estimation, and vegetation zone mapping.
+
+## 🔗 Live Demo & Project Links
+
+| Resource | Link |
+|---|---|
+| 🌐 **Live Frontend** | https://multispectral-crop-imaging-drone.vercel.app/ |
+| ⚙️ **Backend API** | https://multispectral-paddy-api.onrender.com |
+| 📘 **API Documentation (Swagger UI)** | https://multispectral-paddy-api.onrender.com/docs |
+| 💻 **GitHub Repository** | https://github.com/keerthana17291729/multispectral-crop-imaging-drone |
+
+> **Note:** The frontend is hosted on Vercel, and the backend API is hosted on Render. The backend runs on a free instance, so the first request after inactivity may take longer to respond.
+
 ---
 
 ## 📖 Overview
 
-**Multispectral Paddy Crop Analysis System** is an AI-powered web application that analyzes multispectral drone images of paddy fields to assess crop health, detect water stress, estimate chlorophyll levels, and classify vegetation zones.
+The **Multispectral Paddy Crop Analysis System** processes multispectral UAV (Unmanned Aerial Vehicle) imagery to extract spectral information and generate crop-related insights.
 
-The system processes multispectral UAV imagery using vegetation indices such as **NDVI**, **NDRE**, and **NDWI**, combined with machine learning techniques to provide accurate and easy-to-understand crop insights.
+The application uses vegetation indices such as NDVI, NDRE, and NDWI, along with machine learning models and image-processing techniques, to analyze vegetation characteristics and visualize the results through a web dashboard.
 
----
+Users can upload a multispectral TIFF image, classify the crop, and view the generated maps and analysis results supported by the selected objective.
 
 ## ✨ Key Features
 
-- 🌱 Paddy Crop Classification
-- 📈 NDVI (Normalized Difference Vegetation Index)
-- 🌿 NDRE (Normalized Difference Red Edge Index)
-- 💧 NDWI (Normalized Difference Water Index)
-- 🚰 Water Stress Detection
-- 🍃 Chlorophyll Estimation
-- 🗺️ Vegetation Zone Mapping
-- 📊 Statistical Analysis Dashboard
-- 📉 Interactive Charts
-- ⚡ FastAPI REST API
-- 💻 Modern React Frontend
+- 🌱 Paddy crop classification
+- 📈 NDVI — Normalized Difference Vegetation Index
+- 🌿 NDRE — Normalized Difference Red Edge Index
+- 💧 NDWI — Normalized Difference Water Index
+- 🚰 Water stress analysis
+- 🍃 Chlorophyll estimation
+- 🗺️ Vegetation zone mapping
+- 📊 Statistical analysis and crop insights
+- 🖼️ Multispectral TIFF upload and preview
+- ⚙️ REST API built with FastAPI
+- 💻 Interactive web interface built with React.js
+- ☁️ Cloud deployment using Render and Vercel
 
----
+## 🔄 Application Workflow
 
-# 📸 Application Workflow
-
-```
-Upload Multispectral Image
-            │
-            ▼
-     Band Extraction
-            │
-            ▼
- Vegetation Index Calculation
- (NDVI • NDRE • NDWI)
-            │
-            ▼
- Crop Classification
-            │
-            ▼
- Health Analysis
-            │
-            ▼
-Generate Maps & Statistics
-            │
-            ▼
+```text
+Upload Multispectral TIFF Image
+             |
+             v
+      Load Spectral Bands
+             |
+             v
+  Calculate Vegetation Indices
+       NDVI | NDRE | NDWI
+             |
+             v
+      Crop Classification
+             |
+             v
+    Crop Health Analysis
+             |
+             v
+ Generate Maps and Statistics
+             |
+             v
  Display Results on Dashboard
 ```
 
----
+## 🧠 Technologies Used
 
-# 🧠 Technologies Used
-
-## Backend
+### Backend
 
 - Python
 - FastAPI
 - Rasterio
 - NumPy
-- OpenCV
 - Matplotlib
-- Scikit-Learn
+- Scikit-learn
 - Joblib
+- OpenCV (where used by the processing pipeline)
 
-## Frontend
+### Frontend
 
 - React.js
 - Vite
 - JavaScript
 - Axios
-- CSS
-- Recharts
+- HTML5
+- CSS3
 
----
+### Machine Learning and Image Processing
 
-# 🌱 Vegetation Indices
+- Random Forest classification
+- K-Means clustering for vegetation zone analysis
+- Multispectral raster processing
+- Vegetation index calculation
+- Image visualization and statistical analysis
 
-### NDVI
-Measures vegetation health and greenness.
+### Deployment
 
-```
-NDVI = (NIR - Red) / (NIR + Red)
-```
+- **Frontend:** Vercel
+- **Backend:** Render
+- **Version Control:** Git and GitHub
 
----
+## 🌱 Vegetation Indices
 
-### NDRE
+### 1. NDVI — Normalized Difference Vegetation Index
 
-Evaluates chlorophyll concentration and plant vigor.
+NDVI is commonly used to assess vegetation greenness and vegetation conditions.
 
-```
-NDRE = (NIR - RedEdge) / (NIR + RedEdge)
-```
+Formula:
 
----
+\[
+NDVI = \frac{NIR - Red}{NIR + Red}
+\]
 
-### NDWI
+### 2. NDRE — Normalized Difference Red Edge Index
 
-Measures crop water content.
+NDRE uses near-infrared and red-edge reflectance to assess vegetation characteristics associated with chlorophyll and plant vigor.
 
-```
-NDWI = (NIR - Green) / (NIR + Green)
-```
+Formula:
 
----
+\[
+NDRE = \frac{NIR - RedEdge}{NIR + RedEdge}
+\]
 
-# 🛰 Input Data
+### 3. NDWI — Normalized Difference Water Index
 
-Supported Input
+This project uses the NIR–Green formulation to analyze water-related characteristics in vegetation and agricultural imagery.
 
-- Multispectral TIFF Images
-- Four Spectral Bands
+Formula:
+
+\[
+NDWI = \frac{NIR - Green}{NIR + Green}
+\]
+
+**Note:** NDWI has multiple formulations. The formula above specifically refers to the NIR–Green version.
+
+## 🛰️ Input Data
+
+The application accepts supported multispectral TIFF (`.tif` or `.tiff`) imagery.
+
+The expected four spectral bands are:
 
 | Band | Description |
-|------|-------------|
-| Green | Green Band |
-| Red Edge | Red Edge Band |
-| Red | Red Band |
-| NIR | Near Infrared Band |
+|---|---|
+| Green | Green spectral reflectance |
+| Red | Red spectral reflectance |
+| Red Edge | Red-edge spectral reflectance |
+| NIR | Near-infrared spectral reflectance |
 
----
+The input image must contain the expected bands in the order and format supported by the backend processing pipeline.
 
-# 📊 Outputs
+## 📊 Analysis Outputs
 
-The system generates
+Depending on the selected analysis objective and successful processing, the application can generate:
 
-- ✅ NDVI Map
-- ✅ NDRE Map
-- ✅ NDWI Map
-- ✅ Water Stress Map
-- ✅ Chlorophyll Map
-- ✅ Vegetation Zone Map
-- ✅ Crop Classification
-- ✅ Water Stress Percentage
-- ✅ Chlorophyll Percentage
-- ✅ Zone Statistics
+- NDVI map
+- NDRE map
+- NDWI map
+- Water stress analysis
+- Chlorophyll estimation
+- Vegetation zone map
+- Crop classification result
+- Statistical summaries and zone-level information
 
----
+The availability of individual outputs depends on the implemented pipeline and selected objective.
 
-# 📂 Project Structure
+## 🏗️ Project Structure
 
-```
-multispectral_crop_imaging_drone
+```text
+multispectral-crop-imaging-drone/
 │
-├── backend
-│   ├── engine
-│   ├── models
-│   ├── outputs
-│   ├── utils
-│   ├── uploads
+├── backend/
+│   ├── engine/
+│   │   ├── chlorophyll.py
+│   │   ├── crop_classifier.py
+│   │   ├── pipeline.py
+│   │   ├── raster_loader.py
+│   │   ├── statistics.py
+│   │   ├── vegetation_indices.py
+│   │   ├── water_stress.py
+│   │   └── zone_mapping.py
+│   │
+│   ├── models/
+│   │   ├── kmeans_zone.pkl
+│   │   ├── rf_chlorophyll_model.pkl
+│   │   └── rf_crop_classifier.pkl
+│   │
+│   ├── outputs/
+│   │   ├── maps/
+│   │   └── uploads/
+│   │
+│   ├── utils/
+│   │   ├── map_generator.py
+│   │   └── preview_generator.py
+│   │
+│   ├── config.py
 │   └── main.py
 │
-├── frontend
-│   ├── src
-│   ├── public
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── services/
+│   │   ├── styles/
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
 │   ├── package.json
 │   └── vite.config.js
 │
@@ -166,111 +214,167 @@ multispectral_crop_imaging_drone
 └── .gitignore
 ```
 
----
+*Generated output files and local environment files may differ depending on the deployment configuration.*
 
-# ⚙ Installation
+## ⚙️ Installation and Local Setup
 
-## Clone Repository
+### Prerequisites
+
+- Python installed
+- Node.js and npm installed
+- Git installed
+
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YourUsername/multispectral-crop-imaging-drone.git
-
+git clone https://github.com/keerthana17291729/multispectral-crop-imaging-drone.git
 cd multispectral-crop-imaging-drone
 ```
 
----
+### 2. Backend Setup
 
+Create a virtual environment:
 
-## Backend Setup:
+**Windows:**
 
 ```bash
 python -m venv crop_env
-
 crop_env\Scripts\activate
+```
 
+Install the backend dependencies:
+
+```bash
 pip install -r requirements.txt
+```
 
+Start the FastAPI server from the repository root:
+
+```bash
 python -m uvicorn backend.main:app --reload
 ```
 
-Backend runs on
+The backend API will be available at:
 
-```
-http://127.0.0.1:8000
-```
+- API: http://127.0.0.1:8000
+- Swagger documentation: http://127.0.0.1:8000/docs
 
----
+### 3. Frontend Setup
 
-## Frontend Setup
+Open a new terminal and navigate to the frontend directory:
 
 ```bash
 cd frontend
-
 npm install
-
 npm run dev
 ```
 
-Frontend runs on
+The Vite development server will display the local frontend URL, normally:
 
-```
 http://localhost:5173
+
+**Configuration:** The deployed frontend uses the Render backend URL. If you change the API URL or run the application locally, configure the frontend API base URL accordingly.
+
+## 🚀 Deployment Architecture
+
+```text
+                 User / Browser
+                       |
+                       v
+              React Frontend
+                  (Vercel)
+                       |
+                       v
+               FastAPI REST API
+                  (Render)
+                       |
+                       v
+        TIFF Processing and ML Models
+                       |
+                       v
+             Generated Maps / Results
+                       |
+                       v
+               Results Dashboard
 ```
 
+### Frontend Deployment
+
+The React application is deployed on Vercel.
+
+Live URL: https://multispectral-crop-imaging-drone.vercel.app/
+
+### Backend Deployment
+
+The FastAPI application is deployed on Render.
+
+API URL: https://multispectral-paddy-api.onrender.com
+
+Interactive API documentation: https://multispectral-paddy-api.onrender.com/docs
+
+**Deployment considerations:** Render's free instance may spin down after inactivity, and its local filesystem is not persistent. Uploaded TIFF files and generated maps should not be treated as permanently stored data.
+
+## 📸 Application Screenshots
+
+Add screenshots of the following sections to showcase the application's interface:
+
+- Main dashboard
+- TIFF image upload
+- Uploaded image preview
+- NDVI map
+- NDRE map
+- NDWI map
+- Water stress analysis
+- Chlorophyll estimation
+- Vegetation zone map
+- Statistical results
+
+Example:
+
+```markdown
+![Application Dashboard](screenshots/dashboard.png)
+![NDVI Map](screenshots/ndvi-map.png)
+![NDRE Map](screenshots/ndre-map.png)
+![NDWI Map](screenshots/ndwi-map.png)
+```
+
+Create a `screenshots/` directory in the repository and add the corresponding image files before using these examples.
+
+## 🔮 Future Enhancements
+
+- Multi-image and batch analysis
+- Time-series crop monitoring
+- Crop yield prediction
+- Crop disease detection
+- AI-based crop recommendations
+- Satellite imagery support
+- Historical analysis and report export
+- Persistent cloud storage for uploaded images and generated maps
+- Mobile-friendly crop monitoring interface
+
+## 🎯 Applications
+
+- Precision agriculture
+- Smart farming
+- Crop health monitoring
+- Agricultural water management
+- UAV-based field inspection
+- Agricultural research and decision support
+
+## 👩‍💻 Developed By
+
+**Keerthana**  
+B.Tech — Artificial Intelligence and Data Science
+
+GitHub: https://github.com/keerthana17291729
+
+## 📜 License
+
+This project was developed for academic and research purposes. No explicit open-source license is specified in this repository unless a license file is added.
+
 ---
 
-# 📷 Screenshots
+⭐ If you find this project interesting, consider starring the repository!
 
-Add screenshots of:
-
-- Home Page
-- Upload Page
-- NDVI Map
-- NDRE Map
-- NDWI Map
-- Water Stress Map
-- Chlorophyll Map
-- Zone Map
-- Dashboard
-
----
-
-# 🚀 Future Enhancements
-
-- Multiple Image Analysis
-- Time-Series Crop Monitoring
-- Yield Prediction
-- Disease Detection
-- AI-Based Crop Recommendation
-- Satellite Image Support
-- Mobile Application
-- Cloud Deployment
-
----
-
-# 🎯 Applications
-
-- Precision Agriculture
-- Smart Farming
-- Crop Monitoring
-- Water Resource Management
-- Agricultural Research
-- Drone-Based Field Inspection
-
----
-
-# 👨‍💻 Developed By
-
-**Keerthana**
-
-B.Tech – Artificial Intelligence & Data Science
-
----
-
-# 📜 License
-
-This project is developed for academic and research purposes.
-
----
-
-## ⭐ If you found this project useful, don't forget to Star this repository!
+**Live Demo:** https://multispectral-crop-imaging-drone.vercel.app/  
+**API Documentation:** https://multispectral-paddy-api.onrender.com/docs
