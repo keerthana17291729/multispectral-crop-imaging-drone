@@ -1,253 +1,82 @@
-import matplotlib.pyplot as plt
+from pathlib import Path
 import numpy as np
-import os
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
 from backend.config import MAP_DIR
 
-def draw_north_arrow(ax):
-    ax.annotate(
-        'N',
-        xy=(0.95, 0.15),
-        xytext=(0.95, 0.05),
-        arrowprops=dict(facecolor='black', width=6, headwidth=18),
-        ha='center',
-        va='center',
-        fontsize=40,
-        xycoords=ax.transAxes
-    )
-
-
-def draw_scale_bar(ax, pixel_length=350, label="Scale"):
-    ax.plot(
-        [40, 40 + pixel_length],
-        [40, 40],
-        color="black",
-        linewidth=8
-    )
-    ax.text(
-        40 + pixel_length / 2,
-        70,
-        label,
-        ha="center",
-        fontsize=40
-    )
 
 def overlay_boundaries(ax, array):
-    boundaries = np.gradient(array)
-    edge = np.sqrt(boundaries[0] ** 2 + boundaries[1] ** 2)
-    ax.contour(edge, levels=[np.mean(edge)], colors="black", linewidths=2)
+    if array.ndim != 2 or min(array.shape) < 2:
+        return
+    grad_y, grad_x = np.gradient(array.astype(np.float32, copy=False))
+    edge = np.sqrt(grad_y * grad_y + grad_x * grad_x)
+    level = float(np.mean(edge))
+    if np.isfinite(level):
+        ax.contour(edge, levels=[level], colors="black", linewidths=0.5)
 
 
 def save_map(array, map_type, image_name, stats=None):
-    filename = f"{image_name}_{map_type}.png"
-    path = os.path.join(MAP_DIR, filename)
-    if os.path.exists(path):
-        return filename
-    fig, ax = plt.subplots(figsize=(30,22))
-    # ---------------- NDVI ----------------
+    """Save dashboard-sized maps; avoid multi-hundred-megapixel PNGs."""
+    MAP_DIR.mkdir(parents=True, exist_ok=True)
+    filename = f"{Path(image_name).stem}_{map_type}.png"
+    path = MAP_DIR / filename
+
     if map_type == "ndvi":
-        im = ax.imshow(array, cmap="RdYlGn", vmin=-1, vmax=1)
-
-        ax.set_title(
-            "NDVI Map (Vegetation Health)",
-            fontsize=55,
-            pad=40
-        )
-
-        cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-
-        cbar.set_label(
-            "NDVI Value",
-            fontsize=45
-        )
-
-        cbar.ax.tick_params(labelsize=40)
-
-    # ---------------- NDRE ----------------
-
+        cmap, vmin, vmax, title, label = "RdYlGn", -1, 1, "NDVI Map (Vegetation Health)", "NDVI value"
     elif map_type == "ndre":
-
-        im = ax.imshow(array, cmap="YlGn", vmin=-1, vmax=1)
-
-        ax.set_title(
-            "NDRE Map (Chlorophyll Indicator)",
-            fontsize=55,
-            pad=40
-        )
-
-        cbar = plt.colorbar(im, ax=ax)
-
-        cbar.set_label(
-            "NDRE Value",
-            fontsize=45
-        )
-
-        cbar.ax.tick_params(labelsize=40)
-
-    # ---------------- NDWI ----------------
-
+        cmap, vmin, vmax, title, label = "YlGn", -1, 1, "NDRE Map (Chlorophyll Indicator)", "NDRE value"
     elif map_type == "ndwi":
-
-        im = ax.imshow(array, cmap="Blues", vmin=-1, vmax=1)
-
-        ax.set_title(
-            "NDWI Map (Water Content)",
-            fontsize=55,
-            pad=40
-        )
-
-        cbar = plt.colorbar(im, ax=ax)
-
-        cbar.set_label(
-            "NDWI Value",
-            fontsize=45
-        )
-
-        cbar.ax.tick_params(labelsize=40)
-
-    # ---------------- WATER STRESS ----------------
-
+        cmap, vmin, vmax, title, label = "Blues", -1, 1, "NDWI Map (Water Content)", "NDWI value"
     elif map_type == "water_stress":
-
-        cmap = plt.get_cmap("coolwarm",3)
-
-        im = ax.imshow(array,cmap=cmap)
-
-        ax.set_title(
-            "Water Stress Map",
-            fontsize=55,
-            pad=40
-        )
-
-        cbar = plt.colorbar(im,ax=ax,ticks=[0,1,2])
-
-        cbar.ax.set_yticklabels(
-        [
-        "Low Stress",
-        "Moderate Stress",
-        "High Stress"
-        ],
-        fontsize=40
-        )
-
-        overlay_boundaries(ax,array)
-
-    # ---------------- CHLOROPHYLL ----------------
-
+        cmap, vmin, vmax, title, label = plt.get_cmap("coolwarm", 3), None, None, "Water Stress Map", "Stress level"
     elif map_type == "chlorophyll":
-
-        cmap = plt.get_cmap("YlGn",3)
-
-        im = ax.imshow(array,cmap=cmap)
-
-        ax.set_title(
-            "Chlorophyll Map",
-            fontsize=55,
-            pad=40
-        )
-
-        cbar = plt.colorbar(im,ax=ax,ticks=[0,1,2])
-
-        cbar.ax.set_yticklabels(
-        [
-        "Low",
-        "Medium",
-        "High"
-        ],
-        fontsize=40
-        )
-
-        overlay_boundaries(ax,array)
-
-    # ---------------- ZONE ----------------
-
+        cmap, vmin, vmax, title, label = plt.get_cmap("YlGn", 3), None, None, "Chlorophyll Map", "Chlorophyll level"
     elif map_type == "zone":
+        cmap, vmin, vmax, title, label = plt.get_cmap("tab10", 3), None, None, "Management Zone Map", "Zone"
+    else:
+        raise ValueError(f"Unsupported map type: {map_type}")
 
-        cmap = plt.get_cmap("tab10",3)
+    arr = np.asarray(array)
+    fig, ax = plt.subplots(figsize=(9, 7), constrained_layout=True)
+    try:
+        im = ax.imshow(arr, cmap=cmap, vmin=vmin, vmax=vmax, interpolation="nearest")
+        ax.set_title(title, fontsize=13)
+        ax.set_xlabel("Field width (pixels)", fontsize=9)
+        ax.set_ylabel("Field height (pixels)", fontsize=9)
+        ax.tick_params(axis="both", labelsize=8)
+        cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+        cbar.set_label(label, fontsize=9)
+        cbar.ax.tick_params(labelsize=8)
 
-        im = ax.imshow(array,cmap=cmap)
-
-        ax.set_title(
-            "Management Zone Map",
-            fontsize=55,
-            pad=40
-        )
-
-        cbar = plt.colorbar(im,ax=ax,ticks=[0,1,2])
-
-        cbar.ax.set_yticklabels(
-        [
-        "Zone 0",
-        "Zone 1",
-        "Zone 2"
-        ],
-        fontsize=40
-        )
-
-        overlay_boundaries(ax,array)
-
-    # ---------------- COMMON LABELS ----------------
-
-    ax.set_xlabel(
-        "Field Width (pixels)",
-        fontsize=50,
-        labelpad=30
-    )
-
-    ax.set_ylabel(
-        "Field Height (pixels)",
-        fontsize=50,
-        labelpad=30
-    )
-
-    ax.tick_params(
-        axis='both',
-        labelsize=40
-    )
-
-    # ---------------- MAP ELEMENTS ----------------
-
-    draw_north_arrow(ax)
-
-    draw_scale_bar(ax)
-
-    # ---------------- STATISTICS ----------------
-
-    if stats:
-
-        lines=[]
-
-        for k,v in stats.items():
-
-            if isinstance(v,dict):
-
-                lines.append(f"{k}:")
-
-                for sk,sv in v.items():
-                    lines.append(f"  {sk}: {sv:.3f}")
-
+        if map_type in {"water_stress", "chlorophyll", "zone"}:
+            cbar.set_ticks([0, 1, 2])
+            if map_type == "water_stress":
+                cbar.set_ticklabels(["Low", "Moderate", "High"])
+            elif map_type == "chlorophyll":
+                cbar.set_ticklabels(["Low", "Medium", "High"])
             else:
-                lines.append(f"{k}: {v:.3f}")
+                cbar.set_ticklabels(["Zone 0", "Zone 1", "Zone 2"])
+            overlay_boundaries(ax, arr)
 
-        text="\n".join(lines)
+        if stats:
+            lines = []
+            for key, value in stats.items():
+                if isinstance(value, dict):
+                    lines.append(f"{key}:")
+                    lines.extend(f"  {subkey}: {subvalue:.2f}" for subkey, subvalue in value.items() if isinstance(subvalue, (int, float)))
+                elif isinstance(value, (int, float)):
+                    lines.append(f"{key}: {value:.2f}")
+            if lines:
+                ax.text(
+                    0.02, 0.98, "\n".join(lines[:12]), transform=ax.transAxes,
+                    fontsize=7, va="top", bbox={"boxstyle": "round", "facecolor": "white", "alpha": 0.85}
+                )
 
-        ax.text(
-        0.02,
-        0.98,
-        text,
-        transform=ax.transAxes,
-        fontsize=40,
-        verticalalignment="top",
-        bbox=dict(
-            boxstyle="round",
-            facecolor="white",
-            alpha=0.9
-        )
-        )
-
-    plt.tight_layout(rect=[0.05,0.05,0.95,0.95])
-
-    plt.savefig(path,dpi=700)
-
-    plt.close()
+        # 9x7 inches * 120 DPI = 1080x840 pixels, not hundreds of millions.
+        fig.savefig(path, dpi=120)
+    finally:
+        plt.close(fig)
 
     return filename

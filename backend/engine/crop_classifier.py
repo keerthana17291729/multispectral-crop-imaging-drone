@@ -1,7 +1,9 @@
-import numpy as np
 import joblib
+import numpy as np
+from backend.config import CROP_MODEL
 
-model = joblib.load("backend/models/rf_crop_classifier.pkl")
+model = joblib.load(CROP_MODEL)
+
 
 def predict_crop(G, RE, R, NIR, NDVI, NDRE, NDWI):
     features = [
@@ -11,12 +13,7 @@ def predict_crop(G, RE, R, NIR, NDVI, NDRE, NDWI):
         np.mean(NIR), np.std(NIR),
         np.mean(NDVI), np.std(NDVI),
         np.mean(NDRE), np.std(NDRE),
-        np.mean(NDWI), np.std(NDWI)
+        np.mean(NDWI), np.std(NDWI),
     ]
-    features = np.array(features).reshape(1,-1)
-    pred = model.predict(features)[0]
-
-    if pred == 1:
-        return "Paddy"
-    else:
-        return "Non-Paddy"
+    pred = model.predict(np.asarray(features, dtype=np.float64).reshape(1, -1))[0]
+    return "Paddy" if pred == 1 else "Non-Paddy"

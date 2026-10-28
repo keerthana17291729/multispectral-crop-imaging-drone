@@ -13,7 +13,7 @@ function App() {
 
         <div className="container">
 
-            <h1>Multispectral Crop Imaging Drone</h1>
+            <h1>Multispectral Paddy Crop Analysis System</h1>
 
             <UploadSection setResult={setResult} setFile={setFile} />
 
