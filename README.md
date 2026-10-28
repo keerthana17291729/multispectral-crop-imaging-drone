@@ -180,7 +180,8 @@ cd multispectral-crop-imaging-drone
 
 ---
 
-## Backend Setup
+
+## Backend Setup:
 
 ```bash
 python -m venv crop_env

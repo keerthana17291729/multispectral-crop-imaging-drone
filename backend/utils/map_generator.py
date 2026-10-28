@@ -1,12 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-
 from backend.config import MAP_DIR
 
-
 def draw_north_arrow(ax):
-
     ax.annotate(
         'N',
         xy=(0.95, 0.15),
@@ -20,14 +17,12 @@ def draw_north_arrow(ax):
 
 
 def draw_scale_bar(ax, pixel_length=350, label="Scale"):
-
     ax.plot(
         [40, 40 + pixel_length],
         [40, 40],
         color="black",
         linewidth=8
     )
-
     ax.text(
         40 + pixel_length / 2,
         70,
@@ -36,31 +31,20 @@ def draw_scale_bar(ax, pixel_length=350, label="Scale"):
         fontsize=40
     )
 
-
 def overlay_boundaries(ax, array):
-
     boundaries = np.gradient(array)
-
     edge = np.sqrt(boundaries[0] ** 2 + boundaries[1] ** 2)
-
     ax.contour(edge, levels=[np.mean(edge)], colors="black", linewidths=2)
 
 
 def save_map(array, map_type, image_name, stats=None):
-
     filename = f"{image_name}_{map_type}.png"
-
     path = os.path.join(MAP_DIR, filename)
-
     if os.path.exists(path):
         return filename
-
     fig, ax = plt.subplots(figsize=(30,22))
-
     # ---------------- NDVI ----------------
-
     if map_type == "ndvi":
-
         im = ax.imshow(array, cmap="RdYlGn", vmin=-1, vmax=1)
 
         ax.set_title(

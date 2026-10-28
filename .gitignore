@@ -1,35 +1,31 @@
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Virtual Environment
-crop_env/
-venv/
-.env
-
 # Python cache
+__pycache__/
+*.py[cod]
 .pytest_cache/
 
-# VS Code
+# Python virtual environments
+crop_env/
+venv/
+.venv/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# VS Code and OS files
 .vscode/
-
-# Node
-frontend/node_modules/
-
-# Build files
-frontend/dist/
-
-# Uploaded images
-backend/outputs/uploads/
-
-# Generated maps
-backend/outputs/maps/
-
-# Reports
-backend/outputs/reports/
-
-# OS files
 .DS_Store
 Thumbs.db
+
+# Node.js dependencies and build output
+frontend/node_modules/
+frontend/dist/
+
+# Runtime uploads and generated outputs
+backend/outputs/uploads/*
+!backend/outputs/uploads/.gitkeep
+backend/outputs/maps/*
+!backend/outputs/maps/.gitkeep
+backend/outputs/reports/*
+!backend/outputs/reports/.gitkeep

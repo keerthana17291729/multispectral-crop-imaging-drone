@@ -1,88 +1,88 @@
-import {useState} from "react"
-import {analyzeObjectives} from "../services/api"
+import { useState } from "react"
+import { analyzeObjectives } from "../services/api"
 
 const objectives = [
-"All",
-"Health",
-"Water Stress",
-"Chlorophyll",
-"Disease Detection",
-"Disease Localization",
-"Growth Monitoring",
-"Yield Estimation",
-"Zone Mapping",
-"Disease Prediction"
+    "All",
+    "Health",
+    "Water Stress",
+    "Chlorophyll",
+    "Disease Detection",
+    "Disease Localization",
+    "Growth Monitoring",
+    "Yield Estimation",
+    "Zone Mapping",
+    "Disease Prediction"
 ]
 
-function ObjectiveSection({file,setResult,setMessage}){
+function ObjectiveSection({ file, setResult, setMessage }) {
 
-const [selected,setSelected] = useState("All")
-const [loading,setLoading] = useState(false)
+    const [selected, setSelected] = useState("All")
+    const [loading, setLoading] = useState(false)
 
-const notImplemented = [
-"Health",
-"Disease Detection",
-"Disease Localization",
-"Growth Monitoring",
-"Yield Estimation",
-"Disease Prediction"
-]
+    const notImplemented = [
+        "Health",
+        "Disease Detection",
+        "Disease Localization",
+        "Growth Monitoring",
+        "Yield Estimation",
+        "Disease Prediction"
+    ]
 
-const handleAnalyze = async()=>{
+    const handleAnalyze = async () => {
 
-if(!file)return
+        if (!file) return
 
-setLoading(true)
+        setLoading(true)
 
-if(notImplemented.includes(selected)){
+        if (notImplemented.includes(selected)) {
 
-const res = await analyzeObjectives(file,"classification")
+            const res = await analyzeObjectives(file, "classification")
 
-setResult(res)
+            setResult(res)
 
-setMessage("This will be implemented in the future.")
+            setMessage("This will be implemented in the future.")
 
-setLoading(false)
+            setLoading(false)
 
-return
+            return
 
-}
+        }
 
-setMessage("")
+        setMessage("")
 
-const res = await analyzeObjectives(file,selected)
+        const res = await analyzeObjectives(file, selected)
 
-setResult(res)
+        setResult(res)
 
-setLoading(false)
+        setLoading(false)
 
-}
+    }
 
-return(
+    return (
 
-<div className="objective-box">
+        <div className="objective-box">
 
-<select
-className="objective-select"
-value={selected}
-onChange={(e)=>setSelected(e.target.value)}
->
+            <select
+                className="objective-select"
+                value={selected}
+                onChange={(e) => setSelected(e.target.value)}
+            >
 
-{objectives.map(o=>(
-<option key={o} value={o}>{o}</option>
-))}
+                {objectives.map(o => (
+                    <option key={o} value={o}>{o}</option>
+                ))}
 
-</select>
+            </select>
 
-<button onClick={handleAnalyze} disabled={loading}>
+            <button onClick={handleAnalyze} disabled={loading}>
 
-{loading ? "Processing..." : "Analyze"}
+                {loading ? "Processing..." : "Analyze"}
 
-</button>
+            </button>
 
-</div>
+        </div>
 
-)
+    )
 
 }
 

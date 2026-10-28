@@ -1,57 +1,57 @@
-import {useState} from "react"
-import {uploadImage} from "../services/api"
+import { useState } from "react"
+import { uploadImage } from "../services/api"
 
-function UploadSection({setResult,setFile}){
+function UploadSection({ setResult, setFile }) {
 
-const [selected,setSelected] = useState(null)
-const [loading,setLoading] = useState(false)
+    const [selected, setSelected] = useState(null)
+    const [loading, setLoading] = useState(false)
 
-const handleFileChange=(e)=>{
-setSelected(e.target.files[0])
-}
+    const handleFileChange = (e) => {
+        setSelected(e.target.files[0])
+    }
 
-const handleUpload = async()=>{
+    const handleUpload = async () => {
 
-if(!selected) return
+        if (!selected) return
 
-setFile(selected)
+        setFile(selected)
 
-setLoading(true)
+        setLoading(true)
 
-const res = await uploadImage(selected)
+        const res = await uploadImage(selected)
 
-setResult(res)
+        setResult(res)
 
-setLoading(false)
+        setLoading(false)
 
-}
+    }
 
-return(
+    return (
 
-<div className="upload-box">
+        <div className="upload-box">
 
-<h2>Upload Crop Image</h2>
+            <h2>Upload Crop Image</h2>
 
-<div className="upload-row">
+            <div className="upload-row">
 
-<input
-className="choose-file"
-type="file"
-accept=".tif,.tiff"
-onChange={handleFileChange}
-/>
+                <input
+                    className="choose-file"
+                    type="file"
+                    accept=".tif,.tiff"
+                    onChange={handleFileChange}
+                />
 
-<button onClick={handleUpload}>
+                <button onClick={handleUpload}>
 
-{loading ? "Processing..." : "Upload"}
+                    {loading ? "Processing..." : "Upload"}
 
-</button>
+                </button>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-)
+    )
 
 }
 

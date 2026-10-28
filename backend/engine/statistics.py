@@ -16,7 +16,6 @@ def compute_statistics(stress_map, NDRE, zone_map):
     }
 
     chlorophyll_index = float(np.mean(NDRE))
-
     zone_stats = {}
 
     for z in [0,1,2]:
