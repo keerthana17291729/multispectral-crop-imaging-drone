@@ -6,31 +6,18 @@ const objectives = [
   "All",
   "Health",
   "Water Stress",
-  "Chlorophyll",
-  "Disease Detection",
-  "Disease Localization",
-  "Growth Monitoring",
-  "Yield Estimation",
-  "Zone Mapping",
-  "Disease Prediction"
+  "Chlorophyll"
 ];
 
 function ObjectiveSection({ file, setResult, setMessage }) {
   const [selected, setSelected] = useState("All");
   const [loading, setLoading] = useState(false);
 
-  const notImplemented = [
-    "Health",
-    "Disease Detection",
-    "Disease Localization",
-    "Growth Monitoring",
-    "Yield Estimation",
-    "Disease Prediction"
-  ];
-
   const handleAnalyze = async () => {
     if (!file || loading) {
-      if (!file) setMessage("Please upload an image first.");
+      if (!file) {
+        setMessage("Please upload an image first.");
+      }
       return;
     }
 
@@ -38,18 +25,8 @@ function ObjectiveSection({ file, setResult, setMessage }) {
     setMessage("");
 
     try {
-      const objective = notImplemented.includes(selected)
-        ? "classification"
-        : selected;
-
-      const response = await analyzeObjectives(file, objective);
+      const response = await analyzeObjectives(file, selected);
       setResult(response);
-
-      if (notImplemented.includes(selected)) {
-        setMessage(
-          `${selected} is not implemented yet. The image was classified again instead.`
-        );
-      }
     } catch (error) {
       setMessage(error.message || "Analysis failed.");
     } finally {

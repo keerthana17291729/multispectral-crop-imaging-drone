@@ -14,7 +14,6 @@ from backend.utils.map_generator import save_map
 
 logger = logging.getLogger("crop_pipeline")
 
-
 def compute_zone_features(zone_map, NDVI, NDRE, NDWI):
     zone_features = {}
     for z in [0, 1, 2]:
@@ -26,7 +25,6 @@ def compute_zone_features(zone_map, NDVI, NDRE, NDWI):
                 "mean_ndwi": float(np.mean(NDWI[mask])),
             }
     return zone_features
-
 
 def run_pipeline(file_path, objective):
     started = time.perf_counter()

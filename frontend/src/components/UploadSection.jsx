@@ -39,7 +39,7 @@ function UploadSection({ setResult, setFile, setMessage }) {
 
   return (
     <div className="upload-box">
-      <h2>Upload Crop Image</h2>
+      <h2>Upload 4-Band (Green, RE, Red, NIR) Multispectral Paddy Image</h2>
 
       <div className="upload-row">
         <input
